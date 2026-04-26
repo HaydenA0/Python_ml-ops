@@ -1,0 +1,44 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python -m python.train
+    deps:
+    - path: data/PCXP/test
+      hash: md5
+      md5: 81aa88ffa713e385ffe0f1f585a70e4b.dir
+      size: 79054751
+      nfiles: 624
+    - path: data/PCXP/train
+      hash: md5
+      md5: 1800b36656210be745053c88668e59b1.dir
+      size: 1157428055
+      nfiles: 5232
+    - path: python/ml_pipeline.py
+      hash: md5
+      md5: de5a7d74a9405f28105d236e20401d22
+      size: 1379
+    - path: python/train.py
+      hash: md5
+      md5: 5b9560aa0a9cb4aa863c04e3bd916385
+      size: 3123
+    outs:
+    - path: models/model.pth
+      hash: md5
+      md5: 7bfca488418ab734406910afbe1eee88
+      size: 44782667
+  evaluate:
+    cmd: python -m python.evaluate
+    deps:
+    - path: data/PCXP/test
+      hash: md5
+      md5: 81aa88ffa713e385ffe0f1f585a70e4b.dir
+      size: 79054751
+      nfiles: 624
+    - path: models/model.pth
+      hash: md5
+      md5: 7bfca488418ab734406910afbe1eee88
+      size: 44782667
+    - path: python/ml_pipeline.py
+      hash: md5
+      md5: de5a7d74a9405f28105d236e20401d22
+      size: 1379

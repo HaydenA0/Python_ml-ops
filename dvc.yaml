@@ -1,6 +1,6 @@
 stages:
   train:
-    cmd: python python/train.py
+    cmd: python -m python.train
     deps:
       - python/train.py
       - python/ml_pipeline.py
@@ -10,9 +10,8 @@ stages:
       - models/model.pth:
           cache: true
   evaluate:
-    cmd: python python/predict.py
+    cmd: python -m python.evaluate
     deps:
-      - python/predict.py
       - python/ml_pipeline.py
       - data/PCXP/test
       - models/model.pth
