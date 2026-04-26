@@ -27,3 +27,9 @@ To evaluate the model, run:
 ```bash
 python python/evaluate.py
 ```
+
+### Tests
+To run the unit tests, run:
+```bash
+python -m unittest discover -s tests
+```
