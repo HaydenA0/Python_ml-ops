@@ -3,15 +3,21 @@ stages:
     cmd: python -m python.train
     deps:
       - python/train.py
-      - python/ml_pipeline.py
+      - python/pcxp_mlops
       - data/PCXP/train
       - data/PCXP/test
     outs:
       - models/model.pth:
           cache: true
+      - models/classes.json
+      - models/metadata.json
   evaluate:
     cmd: python -m python.evaluate
     deps:
-      - python/ml_pipeline.py
+      - python/evaluate.py
+      - python/pcxp_mlops
       - data/PCXP/test
       - models/model.pth
+      - models/classes.json
+    outs:
+      - models/metadata.json

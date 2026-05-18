@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PCXP Pneumonia Classifier</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <p class="eyebrow">Medical Imaging Inference</p>
+      <h1>Upload a chest X-ray and run the pneumonia model.</h1>
+      <p class="hero-copy">
+        This interface sends the selected image to the FastAPI inference service and returns
+        the predicted class, confidence score, and active model version.
+      </p>
+    </section>
+
+    <section class="panel-grid">
+      <article class="panel upload-panel">
+        <div class="panel-header">
+          <h2>Run Prediction</h2>
+          <span id="api-status" class="status-pill">Checking API</span>
+        </div>
+
+        <form id="predict-form" class="predict-form">
+          <label class="file-dropzone" for="image-input">
+            <input id="image-input" name="image" type="file" accept="image/*" required>
+            <span class="dropzone-title">Select an X-ray image</span>
+            <span class="dropzone-subtitle">PNG, JPG, or JPEG</span>
+          </label>
+
+          <div class="field-row">
+            <label for="threshold">Threshold</label>
+            <input id="threshold" name="threshold" type="number" min="0" max="1" step="0.01" value="0.87">
+          </div>
+
+          <button id="submit-button" type="submit">Analyze Image</button>
+        </form>
+
+        <p id="form-message" class="form-message" aria-live="polite"></p>
+      </article>
+
+      <article class="panel preview-panel">
+        <div class="panel-header">
+          <h2>Preview</h2>
+          <span id="file-name" class="muted-label">No file selected</span>
+        </div>
+        <div class="preview-frame">
+          <img id="image-preview" alt="Uploaded X-ray preview">
+          <div id="preview-placeholder" class="preview-placeholder">
+            The selected image will appear here before inference.
+          </div>
+        </div>
+      </article>
+
+      <article class="panel result-panel">
+        <div class="panel-header">
+          <h2>Prediction Result</h2>
+          <span id="model-version" class="muted-label">Model version unavailable</span>
+        </div>
+        <div id="result-card" class="result-card hidden">
+          <div class="result-main">
+            <p class="result-label">Predicted Class</p>
+            <h3 id="predicted-class">-</h3>
+          </div>
+          <div class="result-metrics">
+            <div>
+              <p class="result-label">Confidence</p>
+              <strong id="predicted-probability">-</strong>
+            </div>
+            <div>
+              <p class="result-label">Threshold</p>
+              <strong id="applied-threshold">-</strong>
+            </div>
+            <div>
+              <p class="result-label">Request ID</p>
+              <strong id="request-id">-</strong>
+            </div>
+          </div>
+        </div>
+        <div id="empty-state" class="empty-state">
+          Run a prediction to populate the response details.
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

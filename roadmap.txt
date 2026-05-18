@@ -1,0 +1,305 @@
+
+UNIVERSITE MOHAMMED V DE RABAT
+Ecole Nationale Supérieure d'Informatique et d'Analyse des Systèmes
+
+
+Filière : 2IA Semestre 4 : MLOPS
+Travail a Présenté : Pipeline ML de l'Exploration à la Production d'un Modèle de Prédiction Médicale (sans automatisation)
+
+1. Contexte Général
+1.1 Le Machine Learning au Service de la Médecine
+Le domaine médical est l'un des plus prometteurs pour l'application du Machine Learning. Qu'il s'agisse d'aide au diagnostic, de prédiction de risques, de détection précoce de maladies ou d'optimisation des traitements, les modèles d'apprentissage automatique peuvent apporter une valeur considérable en complément de l'expertise médicale humaine.
+Les enjeux sont cependant particulièrement élevés : une prédiction erronée peut avoir des conséquences directes sur la santé, voire la vie d'un patient. Cette réalité impose des standards de qualité, de reproductibilité et de traçabilité bien supérieurs à ceux d'autres domaines d'application.
+1.2 Les Limites du Notebook Isolé
+Un modèle ML développé dans un notebook Jupyter reste, aussi performant soit-il, un prototype. Il souffre de plusieurs limitations fondamentales qui l'empêchent d'être utilisé en production :
+• Non-reproductibilité : les cellules exécutées dans un ordre non défini produisent des résultats différents
+• Fragile dépendance à l'environnement : le notebook fonctionne sur la machine de l'auteur mais échoue sur une autre
+• Absence de tests : aucun mécanisme ne garantit que le code produit les résultats attendus après modification
+• Opacité : impossible de savoir quel jeu de données, quels paramètres et quelle version du code ont produit un résultat donné
+• Non-déployable : un notebook ne peut pas être exposé directement comme service à des utilisateurs ou des systèmes tiers
+1.3 L'Importance d'un Pipeline MLOps Complet
+Le MLOps (Machine Learning Operations) est la discipline qui vise à industrialiser le développement, le déploiement et la maintenance des modèles ML. Un pipeline MLOps complet garantit :
+• La reproductibilité : n'importe qui peut reproduire exactement les mêmes résultats à partir du même code et des mêmes données
+• La traçabilité : chaque expérimentation est documentée, chaque version de modèle est liée à ses données et paramètres
+• La maintenabilité : le code modulaire est testable, lisible et évolutif
+• Le déploiement : le modèle est accessible comme service, consommable par d'autres applications
+• La collaboration : l'équipe travaille sur le même dépôt, avec un historique clair des modifications
+
+
+2. Problématique
+2.1 Description du Problème
+Un établissement de santé souhaite mettre en place un système d'aide à la décision médicale basé sur des données cliniques tabulaires. L'objectif est de prédire un risque ou un diagnostic à partir de variables mesurables (résultats d'examens biologiques, données démographiques, constantes vitales, antécédents médicaux).
+Le problème est formulé comme une classification binaire : étant donnée une observation clinique (ensemble de mesures pour un patient), le système doit déterminer si le patient appartient à la classe positive (présence de la pathologie, risque élevé, réadmission probable, etc.) ou à la classe négative.
+2.2 Enjeux et Responsabilités
+Ce type de problème présente des enjeux spécifiques au domaine médical :
+
+Type d'erreurDescriptionConséquence médicaleFaux Négatif (FN)Prédire négatif alors que c'est positifPatient malade non diagnostiqué ? prise en charge manquée, aggravationFaux Positif (FP)Prédire positif alors que c'est négatifPatient sain alarmé inutilement ?
+examens inutiles, stress, coût
+
+Ces deux types d'erreurs ne sont pas équivalents. En médecine, le choix de la métrique d'optimisation (rappel vs précision) est une décision médicale avant d'être une décision technique. Le médecin et le data scientist doivent co-définir quel type d'erreur est le moins acceptable dans le contexte donné.
+3. Objectifs Pédagogiques
+À l'issue de cet atelier, vous serez capables de :
+1. Concevoir et implémenter un pipeline ML structuré de bout en bout, de l'exploration des données au déploiement
+2. Conduire une analyse exploratoire rigoureuse et traduire ses enseignements en décisions de preprocessing
+3. Comparer plusieurs modèles ML de manière objective et justifier le choix du modèle de production
+4. Structurer un projet Python de manière modulaire, maintenable et testable
+5. Garantir la reproductibilité des expériences avec DVC (données) et MLflow (expériences)
+6. Exposer un modèle ML comme service via une API REST
+7. Conteneuriser une application ML avec Docker pour garantir la portabilité
+8. Gérer un projet de développement avec les bonnes pratiques GitHub
+
+
+Toutes ces tâches ont déjà été traitées lors des TP précédents, à l'exception des parties relatives à Docker et GitHub. La phase d'automatisation, quant à elle, sera abordée dans de futurs ateliers.
+
+4. Choix du Dataset
+4.1 Critères de Sélection
+Vous êtes libres de choisir votre dataset, à condition qu'il respecte les critères suivants :
+• Format tabulaire (fichier CSV ou équivalent)
+• Domaine médical ou clinique
+• Tâche de classification ou régression
+• Volume suffisant : plus de 1000 observations
+• Au moins 5 features numériques ou catégorielles
+• Présence de valeurs manquantes ou de déséquilibre de classes (pour enrichir l'EDA)
+4.2 Exemples de Datasets Recommandés
+DatasetTâcheSourceParticularité pédagogiquePima Indians DiabetesPrédiction diabèteUCI / KaggleClassique, déséquilibré, valeurs aberrantesHeart Disease (Cleveland)Prédiction maladie cardiaqueUCIMulti-classes réduites en binaire, bon équilibreBreast Cancer WisconsinClassification tumeurSklearn / UCIBien nettoyé, idéal pour débutantsStroke Prediction DatasetPrédiction AVCKaggleTrès déséquilibré, valeurs manquantesChronic Kidney DiseaseDétection insuffisance rénaleUCINombreuses valeurs manquantes, features mixtesLiver Patient DatasetPrédiction maladie du foieUCI / KaggleDéséquilibré, outliers nombreux
+
+5. Description Globale du Pipeline
+Le projet suit un flux linéaire et progressif, où chaque étape alimente la suivante. Ce flux reproduit fidèlement le cycle de vie d'un projet ML professionnel.
+
+ÉtapePhaseDescription synthétique1EDAExplorer les données brutes, comprendre leur structure, identifier les problèmes et formuler des hypothèses2PreprocessingNettoyer et transformer les données pour les rendre exploitables par les modèles3ModélisationEntraîner, optimiser et comparer trois modèles ML sur les données préparées4Structuration du codeTransformer le notebook expérimental en modules Python testables et maintenables5TestsÉcrire des tests unitaires et fonctionnels pour valider chaque composant du pipeline6DVCVersionner les données et créer un pipeline reproductible déclaratif7MLflowTracer toutes les expériences, les métriques et les artefacts de modèles8APIExposer le meilleur modèle comme service REST consommable9DockerConteneuriser l'API et ses dépendances pour un déploiement portable10GitHubVersionner le code, structurer le dépôt et documenter le projet
+
+6. Travail Demandé : Description Détaillée
+Partie 1 : Analyse Exploratoire des Données (EDA)
+1.1 Objectifs de l'EDA
+L'Analyse Exploratoire des Données (EDA) n'est pas une formalité - c'est la fondation du projet. Une EDA sérieuse permet de comprendre la nature des données avant toute modélisation, d'identifier les problèmes qui biaiseraient les résultats, et de prendre des décisions éclairées sur le preprocessing et la modélisation.
+1.2 Analyses Attendues
+Vue d'ensemble du dataset :
+• Dimensions : nombre d'observations, nombre de features
+• Types de variables : numériques, catégorielles, binaires, ordonnées
+• Premières observations : les 5 premières lignes, les statistiques descriptives de base
+Analyse de la variable cible :
+• Distribution des classes : proportions de la classe positive et de la classe négative
+• Visualisation : diagramme en barres ou camembert
+• Quantification du déséquilibre : calcul du ratio de déséquilibre
+Analyse des variables numériques :
+• Histogrammes de distribution pour chaque variable numérique
+• Boxplots pour détecter les valeurs aberrantes (outliers)
+• Statistiques descriptives : moyenne, médiane, écart-type, minimum, maximum, quartiles
+• Analyse de l'asymétrie (skewness) et de l'aplatissement (kurtosis)
+Analyse des variables catégorielles :
+• Fréquences et proportions pour chaque catégorie
+• Diagrammes en barres
+• Identification des catégories rares (< 5% des observations)
+Analyse des valeurs manquantes :
+• Nombre et pourcentage de valeurs manquantes par variable
+• Visualisation de la carte des valeurs manquantes (heatmap ou missingno)
+• Analyse du mécanisme de manque : les données sont-elles manquantes de manière aléatoire ou systématique ?
+Analyse des corrélations :
+• Matrice de corrélation (heatmap Pearson pour les variables numériques)
+• Identification des paires de variables fortement corrélées (|r| > 0.7)
+• Analyse point-bisériale : corrélation entre chaque variable numérique et la variable cible
+Analyse bivariée :
+• Pour les variables numériques : violinplot ou boxplot par classe cible
+• Pour les variables catégorielles : tableau croisé normalisé et visualisation stacked bar
+1.3 Livrables de la Partie 1
+• Notebook EDA structuré avec markdown explicatif pour chaque analyse
+
+
+• Rapport EDA synthétique (section dans le README ou document séparé) résumant les 5 insights clés
+• Liste des décisions de preprocessing motivées par l'EDA
+
+
+Partie 2 : Préprocessing
+2.1 Objectifs du Préprocessing
+Le preprocessing transforme les données brutes en données exploitables par les algorithmes de Machine Learning. Un preprocessing rigoureux améliore la performance des modèles, réduit les biais et garantit que les données d'inférence (en production) seront traitées exactement de la même manière que les données d'entraînement.
+2.2 Étapes Attendues
+Nettoyage des données :
+• Suppression des doublons exacts
+• Traitement des valeurs aberrantes : selon votre analyse EDA, winsorisation, suppression ou conservation justifiée
+• Correction des incohérences logiques (ex. âge négatif, tension artérielle = 0)
+Gestion des valeurs manquantes :
+• Variables numériques : imputation par médiane (plus robuste que la moyenne en présence d'outliers) ou imputation multiple si la proportion manquante est élevée
+• Variables catégorielles : imputation par mode ou création d'une catégorie 'Inconnu'
+• Suppression de lignes ou colonnes si le taux de valeurs manquantes dépasse un seuil documenté (ex. > 50%)
+Encodage des variables catégorielles :
+• Variables catégorielles nominales : encodage one-hot (get_dummies ou OneHotEncoder)
+• Variables catégorielles ordinales : encodage ordinal avec ordre explicitement défini
+• Attention aux cardinalités élevées : regroupement des catégories rares avant encodage
+Normalisation et standardisation :
+• Standardisation (Z-score) pour les algorithmes sensibles à l'échelle (SVM, MLP)
+• Min-Max scaling si une plage [0,1] est requise
+• Les modèles à base d'arbres (XGBoost) ne nécessitent pas de normalisation -
+documentez votre choix
+Gestion du déséquilibre de classes :
+• Stratégie de rééchantillonnage si nécessaire : oversampling (SMOTE), undersampling, ou pondération des classes
+• Appliquer le rééchantillonnage uniquement sur les données d'entraînement, jamais sur les données de test
+Séparation train / test :
+• Division du dataset en ensemble d'entraînement (ex. 80%) et ensemble de test (20%)
+• Stratification selon la variable cible pour conserver les proportions de classes
+• Fixer un seed aléatoire pour la reproductibilité
+
+
+Partie 3 : Modélisation et Comparaison des Modèles
+3.1 Modèles à Implémenter
+Vous entraînerez et comparerez obligatoirement les trois modèles suivants. Ce choix est volontaire : ces trois algorithmes représentent trois familles d'approches complémentaires, et leur comparaison est particulièrement instructive.
+
+ModèleFamillePoints fortsPoints faiblesMLP (Réseau de Neurones)Apprentissage profond - couches densesCapture des relations non linéaires complexes, flexibleBoîte noire, nécessite beaucoup de données, hyperparamètres nombreuxSVM (Support Vector Machine)Marge maximale -
+séparateur hyperplanEfficace sur espaces de grande dimension, robuste au surapprentissagePeu interprétable, lent sur grands datasets, sensible à l'échelleXGBoostGradient Boosting -
+ensemble d'arbresTrès performant en pratique, gère les valeurs manquantes, interprétable via feature importanceRisque de surapprentissage sans régularisation, hyperparamètres nombreux3.2 Méthodologie d'Évaluation
+Métriques à calculer pour chaque modèle :
+• Accuracy (précision globale) : proportion de prédictions correctes - attention à son interprétation sur données déséquilibrées
+• Précision (Precision) : parmi les prédictions positives, quelle proportion est correcte ?
+• Rappel (Recall / Sensibilité) : parmi les vrais positifs, quelle proportion a été détectée
+?
+• F1-Score : moyenne harmonique de la précision et du rappel - métrique principale recommandée
+• AUC-ROC : capacité discriminante du modèle indépendamment du seuil de décision
+• Matrice de confusion : visualisation complète des types d'erreurs
+Protocole de validation :
+• Validation croisée k-fold (k=5 ou k=10) sur l'ensemble d'entraînement pour l'optimisation des hyperparamètres
+• Évaluation finale sur l'ensemble de test (une seule fois, en fin de processus)
+• Grid Search ou Random Search pour la recherche des meilleurs hyperparamètres
+3.3 Tableau Comparatif des Résultats
+Vous produirez un tableau comparatif synthétique de tous les modèles évalués :
+
+ModèleAccuracyPrécisionRappelF1-
+ScoreAUC- ROC    Temps d'entraînementMLP------
+
+
+SVM------XGBoost------
+
+Partie 4 : Transition Notebook vers Code Structuré
+4.1 Pourquoi Sortir du Notebook ?
+Un notebook est un excellent outil d'exploration et de communication. Il devient problématique lorsqu'on essaie de le mettre en production, de le tester, ou de le faire évoluer en équipe. Cette partie vous demande de refactoriser votre code de notebook en modules Python organisés.
+4.2 Structure de Modules Attendue
+Votre projet devra contenir au minimum les modules suivants, chacun dans un fichier Python dédié :
+
+ModuleFichierResponsabilitéChargement des donnéesdata_loader.pyLire le fichier CSV, valider le schéma, retourner un DataFrame proprePreprocessingpreprocessing.pyConstruire et sauvegarder le pipeline de transformation Scikit-learnEntraînementtrain.pyEntraîner un modèle, logger dans MLflow, sauvegarder l'artefactÉvaluationevaluate.pyCalculer toutes les métriques et générer les visualisationsPrédictionpredict.pyCharger un modèle sauvegardé et produire des prédictionsConfigurationconfig.pyCentraliser tous les paramètres (chemins, hyperparamètres, seeds)
+
+Partie 5 : Tests Automatisés
+5.1 Rôle des Tests en ML
+Les tests automatisés sont le filet de sécurité du développement logiciel. En ML, ils prennent une dimension particulière car les bugs ne se manifestent pas toujours par des erreurs explicites - souvent, le code s'exécute sans erreur mais produit des résultats incorrects.
+5.2 Types de Tests Attendus
+Tests unitaires (unittest ou pytest) :
+
+
+• Test du chargement des données : vérifier que le fichier est lu correctement, que les colonnes attendues sont présentes, que les types sont corrects
+• Test du preprocessing : vérifier que la sortie du pipeline a la forme attendue, qu'il n'y a plus de valeurs manquantes, que les valeurs sont dans la plage attendue
+• Test de la prédiction : vérifier que la fonction de prédiction retourne le bon format de sortie (tableau numpy, liste, etc.), que les scores sont dans [0, 1]
+• Test des métriques : vérifier que les métriques calculées sont dans [0, 1] et cohérentes entre elles
+Tests fonctionnels :
+• Test de bout en bout (end-to-end) : exécuter le pipeline complet sur un mini-dataset de 10 lignes et vérifier que la sortie finale est cohérente
+• Test de régression : vérifier que les performances sur un dataset de référence figé ne dégradent pas après une modification
+Tests de robustesse :
+• Test avec données manquantes : vérifier que le pipeline gère correctement les valeurs manquantes sans lever d'exception
+• Test avec types incorrects : vérifier que le pipeline lève une erreur informative si une colonne a le mauvais type
+
+
+Partie 6 : Versioning des Données avec DVC
+6.1 Pourquoi DVC ?
+Git est conçu pour versionner du code, pas des données volumineuses. DVC (Data Version Control) étend Git pour versionner les données, les modèles et les pipelines de Machine Learning, en stockant les gros fichiers dans un remote storage (local, S3, Google Drive, etc.) tout en maintenant des métadonnées légères dans Git.
+6.2 Travail Attendu
+Initialisation et configuration :
+• Initialiser DVC dans votre dépôt Git
+• Ajouter votre fichier de données brutes au tracking DVC (dvc add)
+• Configurer un remote storage local (dossier dédié) ou distant
+• Vérifier que le fichier .dvc est bien commité dans Git et que les données sont exclues du suivi Git
+Pipeline DVC (dvc.yaml) :
+• Définir un pipeline avec au moins 3 stages : preprocessing, training, evaluation
+• Définir pour chaque stage : les dépendances (deps), les sorties (outs), les métriques (metrics) et les paramètres (params)
+• Tester la reproductibilité : modifier un paramètre dans params.yaml et vérifier que dvc repro ne ré-exécute que les stages affectés
+Gestion de versions :
+• Créer au moins deux versions des données (ex. dataset original et dataset avec features supplémentaires fictives)
+• Démontrer le passage d'une version à l'autre avec dvc checkout
+Partie 7 : Tracking des Expériences avec MLflow
+7.1 Pourquoi MLflow ?
+
+
+Sans outil de tracking, la gestion des expériences ML ressemble rapidement à un chaos : des résultats notés dans un tableur, des modèles sauvegardés avec des noms comme 'model_final_v3_bis.pkl', et l'impossibilité de retrouver exactement quels paramètres ont produit quel résultat. MLflow résout ce problème en centralisant automatiquement toutes ces informations.
+7.2 Travail Attendu
+Tracking des runs :
+• Logger les hyperparamètres de chaque modèle (mlflow.log_param)
+• Logger toutes les métriques d'évaluation (mlflow.log_metric)
+• Logger les artefacts : modèle sérialisé, courbes ROC, matrices de confusion (mlflow.log_artifact)
+• Organiser les runs en expériences (mlflow.set_experiment) - une expérience par modèle ou une expérience commune
+Comparaison et sélection :
+• Utiliser l'interface MLflow UI pour comparer visuellement les runs
+• Identifier et documenter le run correspondant au meilleur modèle selon le F1-Score sur le test set
+• Enregistrer ce modèle dans le MLflow Model Registry avec un stage 'Production'
+Partie 8 : Exposition via une API REST
+8.1 De l'Objet Modèle au Service
+Un modèle ML sauvegardé dans un fichier .pkl n'est accessible qu'à celui qui dispose de ce fichier et d'un environnement Python configuré. Pour le rendre accessible à d'autres systèmes (applications web, systèmes hospitaliers, dashboards), il doit être exposé comme un service
+- c'est le rôle de l'API REST.
+8.2 Travail Attendu
+Implémentation de l'API (Flask ou FastAPI) :
+• Endpoint GET /health : retourne le statut de l'API et la version du modèle en service
+• Endpoint POST /predict : accepte les features d'un patient en JSON, retourne la prédiction (classe et probabilité)
+• Endpoint GET /model-info : retourne les métadonnées du modèle (métriques d'évaluation, date d'entraînement, version)
+• Gestion des erreurs : retourner des messages d'erreur clairs et des codes HTTP appropriés (400, 422, 500)
+• Validation des entrées : vérifier que toutes les features requises sont présentes et ont les bons types
+Format de la requête et de la réponse :
+• La requête POST /predict accepte un objet JSON avec les valeurs des features
+• La réponse inclut : la classe prédite, la probabilité associée, la version du modèle et un identifiant de requête
+Tests de l'API :
+• Tester manuellement avec curl ou Postman
+• Écrire des tests automatisés avec le client de test de Flask ou FastAPI
+Partie 9 : Conteneurisation avec Docker
+9.1 L'Environnement comme Code
+
+
+L'API fonctionne sur votre machine. Fonctionnera-t-elle sur la machine de votre collègue ? Sur le serveur de production ? Docker répond à cette question en empaquetant l'application et toutes ses dépendances dans un conteneur portable et reproductible.
+9.2 Travail Attendu
+Dockerfile :
+• Image de base Python officielle (version épinglée, ex. python:3.10-slim)
+• Installation des dépendances depuis requirements.txt
+• Copie du code source et des artefacts nécessaires (modèle, scaler)
+• Définition du port exposé et de la commande de démarrage
+• Utilisation de bonnes pratiques : utilisateur non-root, layers optimisés, .dockerignore
+Docker Compose (optionnel mais recommandé) :
+• Définir l'API comme service dans docker-compose.yml
+• Monter les volumes nécessaires (modèles, logs)
+• Définir les variables d'environnement de configuration
+Validation :
+• Construire l'image : docker build
+• Démarrer le conteneur : docker run
+• Vérifier que l'API répond correctement depuis l'extérieur du conteneur
+• Tester avec une requête de prédiction sur le conteneur en cours d'exécution
+Partie 10 : Gestion du Projet avec GitHub
+10.1 GitHub comme Colonne Vertébrale du Projet
+GitHub n'est pas seulement un outil de sauvegarde du code. C'est le centre de coordination du projet : historique des décisions, documentation, suivi des tâches et communication entre collaborateurs.
+10.2 Travail Attendu
+Structure et organisation du dépôt :
+• Dépôt bien nommé et organisé selon la structure décrite dans la section 7
+• README.md complet : présentation du projet, instructions d'installation, d'utilisation et de test
+• requirements.txt ou pyproject.toml avec les dépendances épinglées
+• .gitignore adapté : exclure les données brutes, les modèles volumineux, les environnements virtuels, les fichiers temporaires
+Historique de commits :
+• Commits atomiques et fréquents : un commit = une modification logique
+• Messages de commit clairs et conventionnels (ex. feat: add preprocessing module, fix: handle missing values in blood pressure column)
+• Au moins 15 commits significatifs documentant la progression du projet
+Branches (si travail en binôme) :
+• Branche main : code stable et testé
+• Branches de fonctionnalité (feature/eda, feature/api, etc.)
+• Pull Requests avec description des modifications
+
+
+7. Structure Attendue du Dépôt
+
+
+
+Votre dépôt GitHub devra respecter l'organisation suivante. Cette structure est une convention professionnelle largement adoptée dans les projets MLOps. Elle sépare clairement les données, le code source, les notebooks, les tests et la documentation.
+
+CheminDescriptionmedml-pipeline/Racine du dépôt+-- data/Répertoire géré par DVC - non tracké par Git¦ +-- raw/Données brutes originales¦ +-- processed/Données après preprocessing+-- notebooks/Notebooks Jupyter d'exploration (EDA, expérimentations)+-- src/Code source Python structuré¦ +-- data_loader.pyChargement et validation des données¦ +-- preprocessing.pyPipeline de preprocessing¦ +-- train.pyEntraînement et logging MLflow¦ +-- evaluate.pyCalcul des métriques et visualisations¦ +-- predict.pyInférence à partir d'un modèle sauvegardé¦ +-- config.pyParamètres centralisés+-- api/Code source de l'API REST¦ +-- app.pyApplication Flask ou FastAPI+-- tests/Tests automatisés¦ +-- test_data_loader.pyTests unitaires du chargement¦ +-- test_preprocessing.pyTests unitaires du preprocessing
+
+
+¦ +-- test_api.pyTests fonctionnels de l'API+-- models/Modèles sérialisés (dans .gitignore si volumieux, sinon tracké)+-- reports/Rapports générés : courbes ROC, matrices de confusion+-- docker/Dockerfile et docker-compose.yml+-- dvc.yamlDéfinition du pipeline DVC+-- params.yamlParamètres du pipeline DVC+-- requirements.txtDépendances Python épinglées+-- .gitignoreFichiers et dossiers exclus de Git+-- README.mdDocumentation principale du projet
+
+
+
+
+
+
+Une présentation est prévue demain pour chaque groupe de 2 ou 3 étudiants.
+
+
+
+

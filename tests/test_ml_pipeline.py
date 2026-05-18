@@ -29,10 +29,10 @@ class CountImagesByLabelTests(unittest.TestCase):
             normal_dir.mkdir()
             pneumonia_dir.mkdir()
 
-            (normal_dir / "img1.jpeg").write_text("x")
-            (normal_dir / "img2.jpeg").write_text("x")
-            (pneumonia_dir / "img3.jpeg").write_text("x")
-            (test_dir / "README.txt").write_text("ignore me")
+            (normal_dir / "img1.jpeg").write_text("x", encoding="utf-8")
+            (normal_dir / "img2.jpeg").write_text("x", encoding="utf-8")
+            (pneumonia_dir / "img3.jpeg").write_text("x", encoding="utf-8")
+            (test_dir / "README.txt").write_text("ignore me", encoding="utf-8")
 
             counts = count_images_by_label(str(test_dir))
 
@@ -72,7 +72,3 @@ class RecallFromConfusionMatrixTests(unittest.TestCase):
         recall = recall_from_confusion_matrix(confusion)
 
         self.assertEqual(recall, 0.0)
-
-
-if __name__ == "__main__":
-    unittest.main()

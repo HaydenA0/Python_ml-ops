@@ -1,0 +1,13 @@
+{
+  "project_version": "0.1.0",
+  "model_name": "resnet18",
+  "model_version": "pcxp-resnet18-v1",
+  "dataset": "PCXP chest X-ray pneumonia dataset",
+  "threshold": 0.87,
+  "class_names": [
+    "NORMAL",
+    "PNEUMONIA"
+  ],
+  "trained_at": null,
+  "metrics": {}
+}

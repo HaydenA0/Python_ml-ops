@@ -5,6 +5,8 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-models/
+models/*
+!models/classes.json
+!models/metadata.json
 data/*
 !data/**/*.dvc
