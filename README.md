@@ -1,8 +1,6 @@
 # PCXP Pneumonia Detection – MLOps Pipeline
 
-A complete MLOps pipeline for pneumonia detection from chest X-ray images, from exploratory analysis to production deployment with a REST API and Docker. Built as part of the **MLOps (2IA S4)** coursework at **Université Mohammed V de Rabat – ENSIAS**.
-
-> See [roadmap.txt](./roadmap.txt) for the full project specification and pedagogical context.
+A complete MLOps pipeline for pneumonia detection from chest X-ray images, from exploratory analysis to production deployment with a REST API and Docker. 
 
 ---
 
