@@ -1,0 +1,15 @@
+artifact_uri: file:///home/anasr/dev/projects/MLOPS/mlruns/314350993151358348/06266432a2fd40bca4f6e8d4a32c090e/artifacts
+end_time: 1780635355671
+entry_point_name: ''
+experiment_id: '314350993151358348'
+lifecycle_stage: active
+run_id: 06266432a2fd40bca4f6e8d4a32c090e
+run_name: unruly-bear-753
+run_uuid: 06266432a2fd40bca4f6e8d4a32c090e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1780635355667
+status: 3
+tags: []
+user_id: anasr

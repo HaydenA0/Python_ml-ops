@@ -32,9 +32,38 @@
           </label>
 
           <div class="field-row">
-            <label for="threshold">Threshold</label>
-            <input id="threshold" name="threshold" type="number" min="0" max="1" step="0.01" value="0.87">
+            <label for="threshold">Confidence Threshold</label>
+            <div class="threshold-row">
+              <input id="threshold" name="threshold" type="range" min="0" max="1" step="0.01" value="0.87">
+              <span id="threshold-value" class="threshold-value">0.87</span>
+            </div>
           </div>
+
+          <details class="clinical-details">
+            <summary>Clinical Metadata (optional)</summary>
+            <div class="clinical-fields">
+              <div class="field-row">
+                <label for="age">Age</label>
+                <input id="age" name="age" type="number" min="0" max="150" placeholder="e.g. 55">
+              </div>
+              <div class="field-row">
+                <label for="sex">Sex</label>
+                <select id="sex" name="sex">
+                  <option value="">--</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+              </div>
+              <div class="field-row">
+                <label for="position">Position</label>
+                <select id="position" name="position">
+                  <option value="">--</option>
+                  <option value="AP">AP</option>
+                  <option value="PA">PA</option>
+                </select>
+              </div>
+            </div>
+          </details>
 
           <button id="submit-button" type="submit">Analyze Image</button>
         </form>
@@ -71,13 +100,40 @@
               <strong id="predicted-probability">-</strong>
             </div>
             <div>
-              <p class="result-label">Threshold</p>
+              <p class="result-label">Applied Threshold</p>
               <strong id="applied-threshold">-</strong>
             </div>
             <div>
               <p class="result-label">Request ID</p>
-              <strong id="request-id">-</strong>
+              <strong id="request-id" class="copyable">-</strong>
             </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label">Inference Latency</span>
+              <span id="latency-ms" class="detail-value">-</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Execution Device</span>
+              <span id="device" class="detail-value">-</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Preprocessing</span>
+              <span id="preprocessing" class="detail-value">-</span>
+            </div>
+          </div>
+
+          <div id="base-probs-section" class="detail-section hidden">
+            <span class="detail-section-title">Base Model Probabilities</span>
+            <div id="base-probs-grid" class="base-probs-grid"></div>
+          </div>
+
+          <div id="clinical-section" class="detail-section hidden">
+            <span class="detail-section-title">Clinical Context</span>
+            <div id="clinical-grid" class="clinical-grid"></div>
           </div>
         </div>
         <div id="empty-state" class="empty-state">

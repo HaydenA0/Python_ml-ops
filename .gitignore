@@ -6,7 +6,6 @@ __pycache__/
 *.pyo
 *.pyd
 models/*
-!models/classes.json
-!models/metadata.json
+models/ensemble/*
 data/*
 !data/**/*.dvc

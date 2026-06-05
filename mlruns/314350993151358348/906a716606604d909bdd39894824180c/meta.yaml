@@ -1,0 +1,15 @@
+artifact_uri: file:///home/anasr/dev/projects/MLOPS/mlruns/314350993151358348/906a716606604d909bdd39894824180c/artifacts
+end_time: 1780611522068
+entry_point_name: ''
+experiment_id: '314350993151358348'
+lifecycle_stage: active
+run_id: 906a716606604d909bdd39894824180c
+run_name: legendary-yak-226
+run_uuid: 906a716606604d909bdd39894824180c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1780611522060
+status: 3
+tags: []
+user_id: anasr

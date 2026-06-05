@@ -1,0 +1,15 @@
+artifact_uri: file:///home/anasr/dev/projects/MLOPS/mlruns/190825965130601492/248c9b1e31084170933101bf72a1689d/artifacts
+end_time: 1780614353898
+entry_point_name: ''
+experiment_id: '190825965130601492'
+lifecycle_stage: active
+run_id: 248c9b1e31084170933101bf72a1689d
+run_name: intrigued-moose-156
+run_uuid: 248c9b1e31084170933101bf72a1689d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1780614353886
+status: 3
+tags: []
+user_id: anasr

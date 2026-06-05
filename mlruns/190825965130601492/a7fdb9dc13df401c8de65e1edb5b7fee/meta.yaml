@@ -1,0 +1,15 @@
+artifact_uri: file:///home/anasr/dev/projects/MLOPS/mlruns/190825965130601492/a7fdb9dc13df401c8de65e1edb5b7fee/artifacts
+end_time: 1780627845572
+entry_point_name: ''
+experiment_id: '190825965130601492'
+lifecycle_stage: active
+run_id: a7fdb9dc13df401c8de65e1edb5b7fee
+run_name: awesome-frog-303
+run_uuid: a7fdb9dc13df401c8de65e1edb5b7fee
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1780627845567
+status: 3
+tags: []
+user_id: anasr

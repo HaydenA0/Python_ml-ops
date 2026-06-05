@@ -1,0 +1,75 @@
+============================================================
+ENSEMBLE TRAINING
+============================================================
+
+Phase 1/2: Training 3 base models on full data...
+
+[1/3] Training base model: resnet18
+  Architecture: resnet18 | LR: 0.001 | Epochs: 5
+  resnet18 | Epoch  1/5 | Loss: 0.4300 | Acc: 0.8058 | 345.5s
+  resnet18 | Epoch  2/5 | Loss: 0.3930 | Acc: 0.8188 | 354.7s
+  resnet18 | Epoch  3/5 | Loss: 0.3887 | Acc: 0.8227 | 355.8s
+  resnet18 | Epoch  4/5 | Loss: 0.3802 | Acc: 0.8286 | 362.4s
+  resnet18 | Epoch  5/5 | Loss: 0.3713 | Acc: 0.8312 | 374.7s
+  resnet18 | Total: 1793.0s (358.6s/epoch)
+  Saved resnet18 (1793.3s total)
+
+[2/3] Training base model: tiny_cnn
+  Architecture: tiny_cnn | LR: 0.001 | Epochs: 8
+  tiny_cnn | Epoch  1/8 | Loss: 0.4873 | Acc: 0.7755 | 323.3s
+  tiny_cnn | Epoch  2/8 | Loss: 0.4513 | Acc: 0.7871 | 302.2s
+  tiny_cnn | Epoch  3/8 | Loss: 0.4421 | Acc: 0.7946 | 322.3s
+  tiny_cnn | Epoch  4/8 | Loss: 0.4338 | Acc: 0.7997 | 314.4s
+  tiny_cnn | Epoch  5/8 | Loss: 0.4238 | Acc: 0.8095 | 293.0s
+  tiny_cnn | Epoch  6/8 | Loss: 0.4145 | Acc: 0.8126 | 276.1s
+  tiny_cnn | Epoch  7/8 | Loss: 0.4066 | Acc: 0.8156 | 290.8s
+  tiny_cnn | Epoch  8/8 | Loss: 0.4007 | Acc: 0.8158 | 284.0s
+  tiny_cnn | Total: 2406.1s (300.8s/epoch)
+  Saved tiny_cnn (2406.1s total)
+
+[3/3] Training base model: resnet18_low_lr
+  Architecture: resnet18 | LR: 0.0001 | Epochs: 5
+  resnet18_low_lr | Epoch  1/5 | Loss: 0.3922 | Acc: 0.8196 | 345.7s
+  resnet18_low_lr | Epoch  2/5 | Loss: 0.3468 | Acc: 0.8468 | 344.4s
+  resnet18_low_lr | Epoch  3/5 | Loss: 0.3151 | Acc: 0.8610 | 343.0s
+  resnet18_low_lr | Epoch  4/5 | Loss: 0.2510 | Acc: 0.8919 | 341.5s
+  resnet18_low_lr | Epoch  5/5 | Loss: 0.1645 | Acc: 0.9353 | 362.2s
+  resnet18_low_lr | Total: 1736.9s (347.4s/epoch)
+  Saved resnet18_low_lr (1737.1s total)
+
+All 3 base models trained in 5936.5s
+
+Phase 2/2: Training meta-learner on held-out predictions...
+
+Training base models on 21348 samples (val: 5336 samples)...
+
+  [1/3] resnet18 (resnet18, 2 epochs, LR=0.001)
+  resnet18 | Epoch  1/2 | Loss: 0.4272 | Acc: 0.8020 | 376.0s
+  resnet18 | Epoch  2/2 | Loss: 0.3944 | Acc: 0.8220 | 373.1s
+  resnet18 | Total: 749.1s (374.6s/epoch)
+
+  [2/3] tiny_cnn (tiny_cnn, 4 epochs, LR=0.001)
+  tiny_cnn | Epoch  1/4 | Loss: 0.4799 | Acc: 0.7787 | 302.7s
+  tiny_cnn | Epoch  2/4 | Loss: 0.4425 | Acc: 0.7922 | 304.8s
+  tiny_cnn | Epoch  3/4 | Loss: 0.4329 | Acc: 0.7998 | 297.2s
+  tiny_cnn | Epoch  4/4 | Loss: 0.4226 | Acc: 0.8061 | 292.4s
+  tiny_cnn | Total: 1197.1s (299.3s/epoch)
+
+  [3/3] resnet18_low_lr (resnet18, 2 epochs, LR=0.0001)
+  resnet18_low_lr | Epoch  1/2 | Loss: 0.3908 | Acc: 0.8223 | 359.4s
+  resnet18_low_lr | Epoch  2/2 | Loss: 0.3482 | Acc: 0.8419 | 358.6s
+  resnet18_low_lr | Total: 718.0s (359.0s/epoch)
+
+Generating validation predictions (5336 samples)...
+  Validation predictions collected in 85.6s
+Training meta-learner (LogisticRegression, 6 features)...
+  Meta-learner trained in 0.0s
+  Training accuracy: 0.8370
+Saved meta-learner to /home/anasr/dev/projects/MLOPS/models/ensemble/meta_model.pkl
+============================================================
+Ensemble training complete in 8690.7s
+  Phase 1 (base models): 5938.5s
+  Phase 2 (meta-learner): 2752.2s
+============================================================
+
+

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/anasr/dev/projects/MLOPS/mlruns/314350993151358348/cff44928e9774abaaa121a0649277963/artifacts
+end_time: 1780625136629
+entry_point_name: ''
+experiment_id: '314350993151358348'
+lifecycle_stage: active
+run_id: cff44928e9774abaaa121a0649277963
+run_name: enthused-fox-338
+run_uuid: cff44928e9774abaaa121a0649277963
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1780625136625
+status: 3
+tags: []
+user_id: anasr

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/anasr/dev/projects/MLOPS/mlruns/190825965130601492/524e941dceaa4f12bfbcd44d72e7a6e6/artifacts
+end_time: 1780611094517
+entry_point_name: ''
+experiment_id: '190825965130601492'
+lifecycle_stage: active
+run_id: 524e941dceaa4f12bfbcd44d72e7a6e6
+run_name: dapper-koi-929
+run_uuid: 524e941dceaa4f12bfbcd44d72e7a6e6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1780611094511
+status: 3
+tags: []
+user_id: anasr

@@ -14,9 +14,9 @@ stages:
       size: 2351143
     - path: python/pcxp_mlops
       hash: md5
-      md5: a5f3e370b670fee830a7c194f8cdca7d.dir
-      size: 105634
-      nfiles: 19
+      md5: 8982a2fa02e86810416b3778cf8bc209.dir
+      size: 117231
+      nfiles: 21
     - path: python/train.py
       hash: md5
       md5: d7a27b1984cd2a1ac792a44adf87a45b
@@ -28,7 +28,7 @@ stages:
       size: 41
     - path: models/model.pth
       hash: md5
-      md5: 8e575495de17cdfb001b076db94dd730
+      md5: 5a715f71941297c147090e0039cf709c
       size: 44782667
   evaluate:
     cmd: python -m python.evaluate
@@ -48,7 +48,7 @@ stages:
       size: 41
     - path: models/model.pth
       hash: md5
-      md5: 8e575495de17cdfb001b076db94dd730
+      md5: 5a715f71941297c147090e0039cf709c
       size: 44782667
     - path: python/evaluate.py
       hash: md5
@@ -62,8 +62,8 @@ stages:
     outs:
     - path: models/metadata.json
       hash: md5
-      md5: ae0da122fdac6bff6cf66ef8dd903a57
-      size: 518
+      md5: 00b12ae44e8f01ce0dca213811c7eb86
+      size: 548
   train_ensemble:
     cmd: python -m python.train_ensemble
     deps:
@@ -88,19 +88,19 @@ stages:
     outs:
     - path: models/ensemble/meta_model.pkl
       hash: md5
-      md5: c621ac7eb44657278591d4299d09b95a
+      md5: c6cb95e3d95cdb74a130b765d619b781
       size: 911
     - path: models/ensemble/resnet18.pth
       hash: md5
-      md5: 2c36870497e4f57cdbb96367ae75cf5e
+      md5: c89d241f61f483c35f5d24bd9225d750
       size: 44789515
     - path: models/ensemble/resnet18_low_lr.pth
       hash: md5
-      md5: 00a26ae09c148497840e439368f97f85
+      md5: 5b44d2347d91ca34a927d0c0da614e3f
       size: 44790411
     - path: models/ensemble/tiny_cnn.pth
       hash: md5
-      md5: 36e2ecf7de7a4f00edfe84c65b20fdad
+      md5: 5ff7193354ea21ad46381b7f2a8ad127
       size: 395157
   evaluate_ensemble:
     cmd: python -m python.evaluate_ensemble
@@ -116,19 +116,19 @@ stages:
       size: 2351143
     - path: models/ensemble/meta_model.pkl
       hash: md5
-      md5: c621ac7eb44657278591d4299d09b95a
+      md5: c6cb95e3d95cdb74a130b765d619b781
       size: 911
     - path: models/ensemble/resnet18.pth
       hash: md5
-      md5: 2c36870497e4f57cdbb96367ae75cf5e
+      md5: c89d241f61f483c35f5d24bd9225d750
       size: 44789515
     - path: models/ensemble/resnet18_low_lr.pth
       hash: md5
-      md5: 00a26ae09c148497840e439368f97f85
+      md5: 5b44d2347d91ca34a927d0c0da614e3f
       size: 44790411
     - path: models/ensemble/tiny_cnn.pth
       hash: md5
-      md5: 36e2ecf7de7a4f00edfe84c65b20fdad
+      md5: 5ff7193354ea21ad46381b7f2a8ad127
       size: 395157
     - path: python/evaluate_ensemble.py
       hash: md5
@@ -142,5 +142,5 @@ stages:
     outs:
     - path: models/ensemble/metadata.json
       hash: md5
-      md5: 5d466fcf7dacfe1cc0a9080d1eba7e87
+      md5: d7f56acfbc38733ef447f710c0a32250
       size: 633

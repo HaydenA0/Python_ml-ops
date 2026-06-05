@@ -4,20 +4,49 @@ stages:
     deps:
       - python/train.py
       - python/pcxp_mlops
-      - data/PCXP/train
-      - data/PCXP/test
+      - data/stage2_train_metadata.csv
+      - data/Training/Images
     outs:
       - models/model.pth:
           cache: true
       - models/classes.json
-      - models/metadata.json
   evaluate:
     cmd: python -m python.evaluate
     deps:
       - python/evaluate.py
       - python/pcxp_mlops
-      - data/PCXP/test
+      - data/stage2_train_metadata.csv
+      - data/Training/Images
       - models/model.pth
       - models/classes.json
     outs:
       - models/metadata.json
+  train_ensemble:
+    cmd: python -m python.train_ensemble
+    deps:
+      - python/train_ensemble.py
+      - python/pcxp_mlops
+      - data/stage2_train_metadata.csv
+      - data/Training/Images
+    outs:
+      - models/ensemble/resnet18.pth:
+          cache: true
+      - models/ensemble/tiny_cnn.pth:
+          cache: true
+      - models/ensemble/resnet18_low_lr.pth:
+          cache: true
+      - models/ensemble/meta_model.pkl:
+          cache: true
+  evaluate_ensemble:
+    cmd: python -m python.evaluate_ensemble
+    deps:
+      - python/evaluate_ensemble.py
+      - python/pcxp_mlops
+      - data/stage2_train_metadata.csv
+      - data/Training/Images
+      - models/ensemble/resnet18.pth
+      - models/ensemble/tiny_cnn.pth
+      - models/ensemble/resnet18_low_lr.pth
+      - models/ensemble/meta_model.pkl
+    outs:
+      - models/ensemble/metadata.json

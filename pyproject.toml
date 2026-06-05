@@ -1,0 +1,21 @@
+[project]
+name = "mlops"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12, <3.14"
+dependencies = [
+    "dvc>=3.67.1",
+    "fastapi==0.115.12",
+    "httpx==0.28.1",
+    "joblib==1.4.2",
+    "mlflow==2.22.0",
+    "numpy==2.2.6",
+    "pandas==2.2.3",
+    "pillow==11.2.1",
+    "pytest==8.3.5",
+    "scikit-learn==1.7.0",
+    "torch==2.7.0",
+    "torchvision==0.22.0",
+    "uvicorn[standard]==0.34.2",
+]

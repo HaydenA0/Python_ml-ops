@@ -1,0 +1,6 @@
+artifact_location: file:///home/anasr/dev/projects/MLOPS/mlruns/190825965130601492
+creation_time: 1780611094404
+experiment_id: '190825965130601492'
+last_update_time: 1780611094404
+lifecycle_stage: active
+name: Pneumonia_Model_Evaluation
